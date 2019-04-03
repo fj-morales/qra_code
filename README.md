@@ -37,7 +37,7 @@ python main.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --
 
 To run the adversarial model, a sample command is 
 
-python main_domain.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine --cross_domain ../android/ --wasserstein
+python main_domain.py --cuda --run_dir /tmp/ --model lstm --train ../askubuntu/train --eval ../android/ --bidir --d 100 --embedding ../word_vectors/all_corpora_vectors.txt --max_epoch 50 --use_content --eval_use_content --criterion cosine --cross_train ../android/ --wasserstein
 
 -------------------------------------------------------------------------------
 
