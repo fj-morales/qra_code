@@ -22,7 +22,6 @@ from utils.meter import AUCMeter
 import shutil
 import random
 
-
 import uuid
 import datetime
 import time
@@ -273,7 +272,7 @@ def retrieve_docs(q_topics_file, retrieved_docs_file, index_loc, hits, b=0.2, k=
 #     command = command.encode('utf-8')
     anserini_exec = subprocess.Popen(command, stdout=subprocess.PIPE, shell=False)
     (out, err) = anserini_exec.communicate()
-    print(out)
+#     print(out)
     print('Searching error: ', err)
 
 
@@ -306,65 +305,7 @@ def generate_preds_file(retrieved_docs_file, q_all, ids_dict, hits):
 #                 print('processed: ', i)
             bm25_scores.append(dict(query_dict))
         return bm25_scores
-        
-        
-        
-        
-        
-#         aux_var = -1
-#         bm25_docs = []
-#         while aux_var != 0:
-#             question = {}
-#             lines_gen = islice(f_in, hits)
-#             documents = []
-#             for line in lines_gen:
-#                 id_aux = line.split(' ')[0]
-#                 current_key = ids_dict[id_aux]
-#                 documents.append(line.split(' ')[2])
-                
-# ###             print(documents)
-#             aux_var = len(documents)
-#             if aux_var == 0: 
-#                 break
-# # ##            print(aux_var)##
-# # ##            print(documents)
-#             question['id'] = current_key
-#             question['body'] = q_dict[current_key]
-            
-#             if "bioasq" in dataset_name: 
-#                 documents_url = ['http://www.ncbi.nlm.nih.gov/pubmed/' + doc for doc in documents]
-#                 question['documents'] = documents_url
-#             elif "rob04" in dataset_name:
-#                 question['documents'] = documents
-#             bm25_docs.append(dict(question))
-            
-#     return bm25_docs        
-
-
-
-# def get_bm25_docs(queries_file, q_all, index_loc, b_val=0.75, k_val=1.2):
-    
-#     all_scores = out.splitlines()
-# #     print(ids_docs)
-    
-# #     return ids_docs
-#     all_dict = {}
-#     for doc in all_scores:
-#         key_pair = doc.split(' ')[0] + '_' + doc.split(' ')[2]
-#         all_dict[key_pair] = doc.split(' ')[4]
-#     bm25_scores = [] 
-#     i = 0
-#     for query_dict in q_all:
-#         i += 1
-#         key_pair = query_dict['doc_id'] + '_' + query_dict['dup_id']
-#         try: 
-#             query_dict['score'] = all_dict[key_pair]
-#         except:
-#             query_dict['score'] = 0
-#         if i % 10000 == 0:
-#             print('processed: ', i)
-#         bm25_scores.append(dict(query_dict))
-#     return bm25_scores   
+          
 
 
 # In[35]:
@@ -412,7 +353,7 @@ def get_random_params(hyper_params, num_iter):
 
 def evaluate(baseline_preds):
 
-    print(baseline_preds[0:1])
+#     print(baseline_preds[0:1])
     
     scores = [doc['score'] for doc in baseline_preds]
     scores = np.asarray(scores)
@@ -438,7 +379,7 @@ def baseline_computing(params):
     M = int(params[3])
     Lambda = params[4]
 
-    params_suffix = 'b' + str(b) + 'k' + str(k) + 'N' + str(N) + 'M' + str(M) + 'Lambda' + str(Lambda)
+    params_suffix = 'b' + str(b) + 'k' + str(k) + 'N' + str(N) + 'M' + str(M) + 'Lambda' + str(Lambda) + 'n_rand_iter' + str(num_random_iter) + 'hits' + str(hits)
     retrieved_docs_file = workdir + 'run_bm25_rm3_preds_' + dataset_name[0] + '_' + data_split + '_' + params_suffix + '.txt'
 
     retrieve_docs(q_topics_file, retrieved_docs_file, index_loc, hits, b, k, N, M, Lambda)
@@ -463,7 +404,7 @@ def baseline_computing(params):
 # In[ ]:
 
 
-def find_best_dev_model(best_model_params_file, random_iterations):
+def find_best_dev_model(best_model_params_file, random_iterations, pool_size):
 #     random_search = 'yes'
     
     if random_search == 'yes':
@@ -494,7 +435,6 @@ def find_best_dev_model(best_model_params_file, random_iterations):
         params = [[round(b,3), round(k,3), round(N,3), round(M,3), round(Lambda,3)] 
                   for b in brange for k in krange for N in N_range for M in M_range for Lambda in lamb_range]
     
-    pool_size = 1
 #     print(len(params))
     pool = multiprocessing.Pool(processes=pool_size,
                                 initializer=start_process,
@@ -536,14 +476,41 @@ def find_best_dev_model(best_model_params_file, random_iterations):
         'M': best_model_params[3],
         'Lambda': best_model_params[4],
         'random_iterations': random_iterations,
+        'hits': hits,
         'auc05_score': best_model_params[5],
     }
     best_model_dict = {k:str(v) for k, v in best_model_dict.items()} # everything to string
     
+    print(best_model_dict)
     with open(best_model_params_file, 'wt') as best_model_f:
         json.dump(best_model_dict, best_model_f)
 
 
+def get_test_metrics(best_model_params_file):
+    print(best_model_params_file)
+    print(os.path.exists(best_model_params_file))
+    try:
+        with open(best_model_params_file, 'rt') as best_model_in:
+            best_dev_params = json.load(best_model_in)
+    #         print(best_dev_model_params)
+    #         best_dev_params = {k:float(v) for k, v in best_dev_params.items()}
+        params = [best_dev_params['b'],
+                  best_dev_params['k'],
+                  best_dev_params['N'],
+                  best_dev_params['M'],
+                  best_dev_params['Lambda']
+                 ]
+        test_results = baseline_computing(params)
+	print('global hits before:', hits)
+        global hits 
+        hits = best_dev_params['hits']
+	
+	print('global hits after:', hits)
+        return test_results
+    except:
+        print('No dev model file. Run Dev model first!')
+        
+        
 # In[37]:
 
 
@@ -557,13 +524,17 @@ if __name__ == '__main__':
         print(qloc)
         data_split = sys.argv[2]
         
-        hits = sys.argv[3]
+        
     except:
         sys.exit("Provide data location, split, number of retrieved documents (hits), and number of random iterations")
     
     try:
+        hits = sys.argv[3]
         num_random_iter = sys.argv[4]
+        pool_size = int(sys.argv[5])
     except: 
+        pool_size = 10
+        hits = 55
         if 'dev' in data_split:
             print('No number random of random iterations provided. Using default = 5000')
             num_random_iter = 5000
@@ -642,15 +613,16 @@ if __name__ == '__main__':
     with open(ids_equivalence_file, 'wt') as outfile:
         json.dump(ids_dict, outfile)
     
-    best_model_params_file = workdir + dataset_name[0] + '_bm25_rm3_best_model_dev.json'
+    best_model_params_file = './baselines/best_ir_model/' + dataset_name[0] + '_bm25_rm3_best_model_dev.json'
     
     if 'dev' in data_split:
         print('Dev Mode')
-        find_best_dev_model(best_model_params_file, int(num_random_iter))
+        find_best_dev_model(best_model_params_file, int(num_random_iter), pool_size)
     if 'test' in data_split:
         print('Test Mode')
         test_results = get_test_metrics(best_model_params_file)
         print(test_results)
+        print('hits: ', hits)
 
 
 # In[38]:
