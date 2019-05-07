@@ -1,0 +1,40 @@
+('Starting: ', datetime.datetime(2019, 5, 6, 12, 10, 24, 809727))
+./qra_data/android/
+No need for random iterations in test mode.
+['sh', '../anserini/target/appassembler/bin/IndexCollection', '-collection', 'TrecCollection', '-generator', 'JsoupGenerator', '-threads', '16', '-input', './baselines/to_index_files/', '-index', './baselines/workdir/android_anserini_index', '-storePositions', '-keepStopwords', '-storeDocvectors', '-storeRawDocs']
+2019-05-06 10:10:28,024 INFO  [main] index.IndexCollection (IndexCollection.java:429) - DocumentCollection path: ./baselines/to_index_files/
+2019-05-06 10:10:28,024 INFO  [main] index.IndexCollection (IndexCollection.java:430) - Index path: ./baselines/workdir/android_anserini_index
+2019-05-06 10:10:28,024 INFO  [main] index.IndexCollection (IndexCollection.java:431) - CollectionClass: TrecCollection
+2019-05-06 10:10:28,024 INFO  [main] index.IndexCollection (IndexCollection.java:432) - Generator: JsoupGenerator
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:433) - Threads: 16
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:434) - Stemmer: porter
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:435) - Keep stopwords? true
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:436) - Store positions? true
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:437) - Store docvectors? true
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:438) - Store transformed docs? false
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:439) - Store raw docs? true
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:440) - Optimize (merge segments)? false
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:441) - Whitelist: null
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:442) - Solr? false
+2019-05-06 10:10:28,025 INFO  [main] index.IndexCollection (IndexCollection.java:453) - Dry run (no index created)? false
+2019-05-06 10:10:28,031 INFO  [main] index.IndexCollection (IndexCollection.java:536) - Starting indexer...
+2019-05-06 10:10:28,187 INFO  [main] index.IndexCollection (IndexCollection.java:563) - 1 files found in ./baselines/to_index_files
+2019-05-06 10:10:33,071 INFO  [pool-2-thread-1] index.IndexCollection$LocalIndexerThread (IndexCollection.java:295) - to_index_files/android_trectext.gz: 42970 docs added.
+2019-05-06 10:10:34,129 INFO  [main] index.IndexCollection (IndexCollection.java:638) - # Final Counter Values
+2019-05-06 10:10:34,130 INFO  [main] index.IndexCollection (IndexCollection.java:639) - indexed:           42,970
+2019-05-06 10:10:34,130 INFO  [main] index.IndexCollection (IndexCollection.java:640) - empty:                  0
+2019-05-06 10:10:34,131 INFO  [main] index.IndexCollection (IndexCollection.java:641) - unindexed:              0
+2019-05-06 10:10:34,131 INFO  [main] index.IndexCollection (IndexCollection.java:642) - unindexable:            0
+2019-05-06 10:10:34,131 INFO  [main] index.IndexCollection (IndexCollection.java:643) - skipped:                0
+2019-05-06 10:10:34,131 INFO  [main] index.IndexCollection (IndexCollection.java:644) - errors:                 0
+2019-05-06 10:10:34,142 INFO  [main] index.IndexCollection (IndexCollection.java:647) - Total 42,970 documents indexed in 00:00:06
+
+('Index error: ', None)
+Test Mode
+Best model exits. Loading...
+[u'0.85', u'3.6', u'23', u'471', u'0.7']
+./baselines/workdir/android_query
+['sh', '../anserini/target/appassembler/bin/SearchCollection', '-topicreader', 'Trec', '-index', './baselines/workdir/android_anserini_index', '-topics', './baselines/workdir/android_query', '-output', './baselines/workdir/run_bm25_rm3_preds_android_test_b0.85k3.6N23M471Lambda0.7n_rand_iter1hits1000.txt', '-bm25', '-b', '0.85', '-k1', '3.6', '-rm3', '-rm3.fbDocs', '23', '-rm3.fbTerms', '471', '-rm3.originalQueryWeight', '0.7', '-hits', '1000', '-threads', '10']
+('Searching error: ', None)
+[u'0.85', u'3.6', 23, 471, u'0.7', 0.7316726308105894]
+('Ending: ', datetime.datetime(2019, 5, 6, 12, 11, 45, 746154))
