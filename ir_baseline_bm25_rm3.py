@@ -395,7 +395,7 @@ def baseline_computing(params):
         Lambda,
         float(auc05_score)
     ]
-#    os.remove(retrieved_docs_file)
+    os.remove(retrieved_docs_file)
 #     os.remove(baseline_preds_file)
 
     return results
@@ -486,29 +486,24 @@ def find_best_dev_model(best_model_params_file, random_iterations, pool_size):
         json.dump(best_model_dict, best_model_f)
 
 
-def get_test_metrics(best_model_params_file):
-    print(best_model_params_file)
-    print(os.path.exists(best_model_params_file))
-    try:
-        with open(best_model_params_file, 'rt') as best_model_in:
-            best_dev_params = json.load(best_model_in)
-    #         print(best_dev_model_params)
-    #         best_dev_params = {k:float(v) for k, v in best_dev_params.items()}
-        params = [best_dev_params['b'],
-                  best_dev_params['k'],
-                  best_dev_params['N'],
-                  best_dev_params['M'],
-                  best_dev_params['Lambda']
-                 ]
-        test_results = baseline_computing(params)
-	print('global hits before:', hits)
-        global hits 
-        hits = best_dev_params['hits']
-	
-	print('global hits after:', hits)
-        return test_results
-    except:
-        print('No dev model file. Run Dev model first!')
+# def get_test_metrics(best_params):
+    
+    
+#     try:
+#         with open(best_model_params_file, 'rt') as best_model_in:
+#             best_dev_params = json.load(best_model_in)
+#     #         print(best_dev_model_params)
+#     #         best_dev_params = {k:float(v) for k, v in best_dev_params.items()}
+#         params = [best_dev_params['b'],
+#                   best_dev_params['k'],
+#                   best_dev_params['N'],
+#                   best_dev_params['M'],
+#                   best_dev_params['Lambda']
+#                   best_dev_params['hits']
+#                  ]
+        
+#     except:
+#         print('No dev model file. Run Dev model first!')
         
         
 # In[37]:
@@ -516,6 +511,7 @@ def get_test_metrics(best_model_params_file):
 
 if __name__ == '__main__':
     
+    print('Starting: ', datetime.datetime.now())
     
     try:
         qloc = sys.argv[1] 
@@ -529,14 +525,11 @@ if __name__ == '__main__':
         sys.exit("Provide data location, split, number of retrieved documents (hits), and number of random iterations")
     
     try:
-        hits = sys.argv[3]
         num_random_iter = sys.argv[4]
         pool_size = int(sys.argv[5])
     except: 
         pool_size = 10
-        hits = 55
         if 'dev' in data_split:
-            print('No number random of random iterations provided. Using default = 5000')
             num_random_iter = 5000
         elif 'test' in data_split:
             print('No need for random iterations in test mode.')
@@ -617,13 +610,41 @@ if __name__ == '__main__':
     
     if 'dev' in data_split:
         print('Dev Mode')
+        
+        try:
+            hits = sys.argv[3]
+        except: 
+            print('No number of documents (hits) provided. Using default = 5000.')
+            hits = 5000
         find_best_dev_model(best_model_params_file, int(num_random_iter), pool_size)
     if 'test' in data_split:
         print('Test Mode')
-        test_results = get_test_metrics(best_model_params_file)
-        print(test_results)
-        print('hits: ', hits)
+        if os.path.exists(best_model_params_file):
+            print("Best model exits. Loading...")
+#         try:
+            
+        with open(best_model_params_file, 'rt') as best_model_in:
+            best_dev_params = json.load(best_model_in)
+    #         print(best_dev_model_params)
+    #         best_dev_params = {k:float(v) for k, v in best_dev_params.items()}
+            best_dev_params_loaded = [
+                        best_dev_params['b'],
+                        best_dev_params['k'],
+                        best_dev_params['N'],
+                        best_dev_params['M'],
+                        best_dev_params['Lambda'],
+                        best_dev_params['hits']
+                     ]
+            params = best_dev_params_loaded[0:5]
+            hits = best_dev_params_loaded[5]
+            print(params)
+            test_results = baseline_computing(params)
+            print(test_results)
 
+#         except:
+#             print('No dev model file. Run Dev model first!')
+        
+    print('Ending: ', datetime.datetime.now())
 
 # In[38]:
 
