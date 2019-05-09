@@ -1,0 +1,40 @@
+('Starting: ', datetime.datetime(2019, 5, 7, 10, 8, 47, 922944))
+./qra_data/superuser/
+No need for random iterations in test mode.
+['sh', '../anserini/target/appassembler/bin/IndexCollection', '-collection', 'TrecCollection', '-generator', 'JsoupGenerator', '-threads', '16', '-input', './baselines/to_index_files/', '-index', './baselines/workdir/superuser_anserini_index', '-storePositions', '-keepStopwords', '-storeDocvectors', '-storeRawDocs']
+2019-05-07 08:09:07,730 INFO  [main] index.IndexCollection (IndexCollection.java:429) - DocumentCollection path: ./baselines/to_index_files/
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:430) - Index path: ./baselines/workdir/superuser_anserini_index
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:431) - CollectionClass: TrecCollection
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:432) - Generator: JsoupGenerator
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:433) - Threads: 16
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:434) - Stemmer: porter
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:435) - Keep stopwords? true
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:436) - Store positions? true
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:437) - Store docvectors? true
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:438) - Store transformed docs? false
+2019-05-07 08:09:07,731 INFO  [main] index.IndexCollection (IndexCollection.java:439) - Store raw docs? true
+2019-05-07 08:09:07,732 INFO  [main] index.IndexCollection (IndexCollection.java:440) - Optimize (merge segments)? false
+2019-05-07 08:09:07,732 INFO  [main] index.IndexCollection (IndexCollection.java:441) - Whitelist: null
+2019-05-07 08:09:07,732 INFO  [main] index.IndexCollection (IndexCollection.java:442) - Solr? false
+2019-05-07 08:09:07,732 INFO  [main] index.IndexCollection (IndexCollection.java:453) - Dry run (no index created)? false
+2019-05-07 08:09:07,738 INFO  [main] index.IndexCollection (IndexCollection.java:536) - Starting indexer...
+2019-05-07 08:09:07,976 INFO  [main] index.IndexCollection (IndexCollection.java:563) - 1 files found in ./baselines/to_index_files
+2019-05-07 08:09:45,125 INFO  [pool-2-thread-1] index.IndexCollection$LocalIndexerThread (IndexCollection.java:295) - to_index_files/superuser_trectext.gz: 343033 docs added.
+2019-05-07 08:09:48,261 INFO  [main] index.IndexCollection (IndexCollection.java:638) - # Final Counter Values
+2019-05-07 08:09:48,262 INFO  [main] index.IndexCollection (IndexCollection.java:639) - indexed:          343,033
+2019-05-07 08:09:48,262 INFO  [main] index.IndexCollection (IndexCollection.java:640) - empty:                  0
+2019-05-07 08:09:48,262 INFO  [main] index.IndexCollection (IndexCollection.java:641) - unindexed:              0
+2019-05-07 08:09:48,262 INFO  [main] index.IndexCollection (IndexCollection.java:642) - unindexable:            0
+2019-05-07 08:09:48,262 INFO  [main] index.IndexCollection (IndexCollection.java:643) - skipped:                0
+2019-05-07 08:09:48,263 INFO  [main] index.IndexCollection (IndexCollection.java:644) - errors:                 0
+2019-05-07 08:09:48,269 INFO  [main] index.IndexCollection (IndexCollection.java:647) - Total 343,033 documents indexed in 00:00:40
+
+('Index error: ', None)
+Test Mode
+Best model exits. Loading...
+[u'0.8', u'1.4', u'415', u'56', u'0.8']
+./baselines/workdir/superuser_query
+['sh', '../anserini/target/appassembler/bin/SearchCollection', '-topicreader', 'Trec', '-index', './baselines/workdir/superuser_anserini_index', '-topics', './baselines/workdir/superuser_query', '-output', './baselines/workdir/run_bm25_rm3_preds_superuser_test_b0.8k1.4N415M56Lambda0.8n_rand_iter1hits50000.txt', '-bm25', '-b', '0.8', '-k1', '1.4', '-rm3', '-rm3.fbDocs', '415', '-rm3.fbTerms', '56', '-rm3.originalQueryWeight', '0.8', '-hits', '50000', '-threads', '10']
+('Searching error: ', None)
+[u'0.8', u'1.4', 415, 56, u'0.8', 0.8812719999999999]
+('Ending: ', datetime.datetime(2019, 5, 7, 10, 43, 43, 135346))
