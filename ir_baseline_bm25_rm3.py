@@ -245,6 +245,7 @@ def retrieve_docs(q_topics_file, retrieved_docs_file, index_loc, hits, b=0.2, k=
                anserini_search,
                '-topicreader',
                 'Trec',
+                '-keepstopwords',
                 '-index',
                 index_loc,
                 '-topics',
@@ -253,16 +254,16 @@ def retrieve_docs(q_topics_file, retrieved_docs_file, index_loc, hits, b=0.2, k=
                 retrieved_docs_file,
                 '-bm25',
                 '-b',
-                str(0.4),
+                str(b),
                 '-k1',
-                str(0.9),
+                str(k),
                 '-rm3',
                 '-rm3.fbDocs',
-                str(10),
+                str(N),
                 '-rm3.fbTerms',
-                str(10),
+                str(M),
                 '-rm3.originalQueryWeight',
-                str(0.5),
+                str(Lambda),
                 '-hits',
                 str(hits), 
                 '-threads',
@@ -621,6 +622,7 @@ if __name__ == '__main__':
         print('Test Mode')
         if os.path.exists(best_model_params_file):
             print("Best model exits. Loading...")
+            print(best_model_params_file)
 #         try:
             
         with open(best_model_params_file, 'rt') as best_model_in:
